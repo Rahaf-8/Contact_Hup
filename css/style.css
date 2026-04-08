@@ -143,3 +143,6 @@ header #delete-fav i {
     background-color: #FFEBEC !important;
     border-radius: 8px;
 }
+form p{
+    font-size: 0.8rem;
+}

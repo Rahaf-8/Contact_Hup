@@ -7,9 +7,6 @@ var contactNotesInput = document.getElementById("Notes");
 var contactImageInput = document.getElementById("change-photo");
 var contactFavInput = document.getElementById("fav");
 var contactEmargInput = document.getElementById("emarg");
-var nameRegex = /^[A-Za-z\s]{3,20}$/;
-var phoneRegex = /^01[0125][0-9]{8}$/;
-var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 var conactList = [];
 var favList = [];
 var emarList = [];
@@ -61,38 +58,60 @@ function checkItems() {
   }
 }
 function addContact() {
+  if (
+    validateInput(contactRegex.nameRegex, contactNameInput) &&
+    validateInput(contactRegex.phoneRegex, contactNumberInput) &&
+    validateInput(contactRegex.emailRegex, contactEmailInput) &&
+    validateInput(contactRegex.adressRegex, contactAddressInput) &&
+    validateInput(contactRegex.groupRegex, contactGroupInput) &&
+    validateInput(contactRegex.notesRegex, contactNotesInput)
+  ) { 
+    if (isPhoneNumberExists(contactNumberInput.value)) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Phone number already exists!",
+    });
+    return;
+  }
+    let user = {
+      userName: contactNameInput.value,
+      userNumber: contactNumberInput.value,
+      userEmail: contactEmailInput.value,
+      userAdress: contactAddressInput.value,
+      userGroup: contactGroupInput.value,
+      userNotes: contactNotesInput.value,
+      userImage: contactImageInput.value,
+      userFav: contactFavInput.checked,
+      userEmar: contactEmargInput.checked,
+    };
 
-  let user = {
-    userName: contactNameInput.value,
-    userNumber: contactNumberInput.value,
-    userEmail: contactEmailInput.value,
-    userAdress: contactAddressInput.value,
-    userGroup: contactGroupInput.value,
-    userNotes: contactNotesInput.value,
-    userImage: contactImageInput.value,
-    userFav: contactFavInput.checked,
-    userEmar: contactEmargInput.checked,
-  };
+    conactList.push(user);
+    favList = [];
+    emarList = [];
 
-  conactList.push(user);
-  favList = [];
-  emarList = [];
+    addFav();
+    addEmar();
 
-  addFav();
-  addEmar();
-
-  localStorage.setItem("contactList", JSON.stringify(conactList));
-  displayContact();
-  displayFavourite();
-  displayEmarg();
-  checkItems();
-  Swal.fire({
-  icon: "success",
-  title: "Added Successfully",
-  text:"contact have been added successfully",
-  showConfirmButton: false,
-  timer: 1500
-});
+    localStorage.setItem("contactList", JSON.stringify(conactList));
+    displayContact();
+    displayFavourite();
+    displayEmarg();
+    checkItems();
+    Swal.fire({
+      icon: "success",
+      title: "Added Successfully",
+      text: "contact have been added successfully",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "please enter valid data!",
+    });
+  }
 }
 
 function displayContact() {
@@ -174,6 +193,9 @@ function displayContact() {
 
   document.getElementById("contacts").innerHTML = cartona;
   document.getElementById("total").innerHTML = conactList.length;
+  document.getElementById("countText").innerHTML = `Manage and organize your ${conactList.length} contacts
+
+`
 }
 
 function addFav() {
@@ -315,12 +337,12 @@ function updateContact() {
   displayEmarg();
   checkItems();
   Swal.fire({
-  icon: "success",
-  title: "Updated Successfully",
-   text:"contact have been updated successfully",
-  showConfirmButton: false,
-  timer: 1500
-});
+    icon: "success",
+    title: "Updated Successfully",
+    text: "contact have been updated successfully",
+    showConfirmButton: false,
+    timer: 1500,
+  });
 }
 
 document
@@ -340,12 +362,33 @@ function clear() {
   contactNotesInput.value = null;
   contactFavInput.checked = null;
   contactEmargInput.checked = null;
+  let inputs = [
+    contactNameInput,
+    contactNumberInput,
+    contactEmailInput,
+    contactAddressInput,
+    contactGroupInput,
+    contactNotesInput,
+  ];
+
+  for (let i = 0; i < inputs.length; i++) {
+    inputs[i].classList.remove("is-valid", "is-invalid");
+    inputs[i].nextElementSibling.classList.add("d-none")
+  }
 }
-function searchContact(searchInputValue){
+function searchContact(searchInputValue) {
   var searchInput = searchInputValue.value;
-var cartona=''
+  var cartona = "";
   for (let i = 0; i < conactList.length; i++) {
-  if(conactList[i].userName.toLowerCase().includes(searchInput.toLowerCase()) || conactList[i].userEmail.toLowerCase().includes(searchInput.toLowerCase()) || conactList[i].userNumber.toLowerCase().includes(searchInput.toLowerCase()) )
+    if (
+      conactList[i].userName
+        .toLowerCase()
+        .includes(searchInput.toLowerCase()) ||
+      conactList[i].userEmail
+        .toLowerCase()
+        .includes(searchInput.toLowerCase()) ||
+      conactList[i].userNumber.toLowerCase().includes(searchInput.toLowerCase())
+    )
       cartona += `
      <div class="contact-card col-12 col-sm-6 p-2">
                             <div class="inner p-3 shadow rounded-4">
@@ -421,35 +464,35 @@ var cartona=''
   }
 
   document.getElementById("contacts").innerHTML = cartona;
-  }
-
-
-function validateInput(element, regex) {
-
-  let validIcon = element.parentElement.querySelector(".valid-icon");
-  let invalidIcon = element.parentElement.querySelector(".invalid-icon");
-if (element.value == "") {
-  element.classList.remove("is-valid", "is-invalid");
-  validIcon.classList.add("d-none");
-  invalidIcon.classList.add("d-none");
-  return true;
 }
+let contactRegex = {
+  nameRegex: /^[A-Za-z\s]{3,20}$/,
+  phoneRegex: /^01[0125][0-9]{8}$/,
+  emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  adressRegex: /^[a-zA-Z0-9\s,.'-]{3,}$/,
+  groupRegex: /^(Family|Friends|Work|School|Other)$/,
+  notesRegex: /^[a-zA-Z0-9\s.,!?-]*$/,
+};
 
-  if (regex.test(element.value)) {
-    element.classList.add("is-valid");
-    element.classList.remove("is-invalid");
-
-    validIcon.classList.remove("d-none");
-    invalidIcon.classList.add("d-none");
-
+function validateInput(regex, contactInputElement) {
+  if (regex.test(contactInputElement.value)) {
+    contactInputElement.classList.remove("is-invalid");
+    contactInputElement.classList.add("is-valid");
+    contactInputElement.nextElementSibling.classList.replace("d-block","d-none")
     return true;
   } else {
-    element.classList.add("is-invalid");
-    element.classList.remove("is-valid");
-
-    validIcon.classList.add("d-none");
-    invalidIcon.classList.remove("d-none");
-
+    contactInputElement.classList.remove("is-valid");
+    contactInputElement.classList.add("is-invalid");
+    contactInputElement.nextElementSibling.classList.replace("d-none","d-block")
     return false;
   }
+}
+function isPhoneNumberExists(phone){
+  for (let i = 0; i < conactList.length; i++) {
+    if(conactList[i].userNumber == phone){
+return true;
+    }
+    
+  }
+  return false;
 }

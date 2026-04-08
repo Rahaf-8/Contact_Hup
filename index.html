@@ -65,44 +65,35 @@
                                         <label for="fullName" class="form-label small">Full Name <span
                                                 class="text-danger fw-bold">*</span></label>
                                         <input type="text" class="form-control bg-secondary bg-opacity-10 py-2"
-                                            id="fullName" oninput="validateInput(this, nameRegex)"
+                                            id="fullName" oninput="validateInput(contactRegex.nameRegex, this)"
                                             placeholder="Enter full name">
-                                        <i
-                                            class="fa-solid fa-check text-success position-absolute top-50 end-0 translate-middle-y me-3 d-none valid-icon"></i>
-
-                                        <i
-                                            class="fa-solid fa-circle-exclamation text-danger position-absolute top-50 end-0 translate-middle-y me-3 d-none invalid-icon"></i>
-                                        <div class="invalid-feedback mt-1">Name must be 3-20 letters</div>
+                                        <p class="d-none fw-semibold text-danger">Name must be 3-20 letters</p>
                                     </div>
                                     <div class="mb-1 w-100">
                                         <label for="phoneNumber" class="form-label small">Phone Number <span
                                                 class="text-danger fw-bold">*</span></label>
                                         <input type="text" class="form-control bg-secondary bg-opacity-10 py-2"
-                                            id="phoneNumber" oninput="validateInput(this, phoneRegex)"
+                                            id="phoneNumber" oninput="validateInput(contactRegex.phoneRegex, this)"
                                             placeholder="e.g., 01012345678">
-                                        <div class="invalid-feedback mt-1">Enter valid Egyptian phone number</div>
+                                        <p class="d-none fw-semibold text-danger">Enter valid Egyptian phone number</p>
                                     </div>
                                     <div class="mb-1 w-100">
                                         <label for="emailAddress" class="form-label small">Email Address</label>
                                         <input type="email" class="form-control bg-secondary bg-opacity-10 py-2"
-                                            id="emailAddress" oninput="validateInput(this, emailRegex)"
+                                            id="emailAddress" oninput="validateInput(contactRegex.emailRegex, this)"
                                             placeholder="name@example.com">
-                                             <i
-                                            class="fa-solid fa-check text-success position-absolute top-50 end-0 translate-middle-y me-3 d-none valid-icon"></i>
-
-                                        <i
-                                            class="fa-solid fa-circle-exclamation text-danger position-absolute top-50 end-0 translate-middle-y me-3 d-none invalid-icon"></i>
-                                        <div class="invalid-feedback mt-1">Enter valid email</div>
+                                        <p class="d-none fw-semibold text-danger ">Enter valid email</p>
                                     </div>
                                     <div class="mb-1 w-100">
                                         <label for="Address" class="form-label small">Address</label>
                                         <input type="text" class="form-control bg-secondary bg-opacity-10 py-2"
-                                            id="Address" placeholder="Enter Address">
+                                            id="Address" placeholder="Enter Address" oninput="validateInput(contactRegex.adressRegex, this)">
+                                             <p class="d-none fw-semibold text-danger ">Address must be at least 3 characters and can include letters, numbers</p>
                                     </div>
                                     <div class="mb-1 w-100">
                                         <label class="small pb-2" for="Group">Group</label>
                                         <select class="form-select bg-secondary bg-opacity-10 py-2" id="Group"
-                                            aria-label="Default select example">
+                                            aria-label="Default select example" oninput="validateInput(contactRegex.groupRegex, this)">
                                             <option value="select-group" selected class="d-none" disabled>Select a group
                                             </option>
                                             <option value="Family">Family</option>
@@ -111,12 +102,14 @@
                                             <option value="School">School</option>
                                             <option value="Other">Other</option>
                                         </select>
+                                         <p class="d-none fw-semibold text-danger">Please select a valid group (Family, Friends, Work, School, or Other)</p>
                                     </div>
                                     <div class="mb-1 w-100">
                                         <label for="Notes" class="form-label">Notes</label>
                                         <textarea placeholder="Add notes about this contact"
-                                            class="form-control bg-secondary bg-opacity-10" id="Notes"
+                                            class="form-control bg-secondary bg-opacity-10" id="Notes" oninput="validateInput(contactRegex.notesRegex, this)"
                                             rows="3"></textarea>
+                                             <p class="d-none fw-semibold text-danger">Notes can only include letters, numbers, spaces, and . , ! ? -</p>
                                     </div>
 
                                     <div class="mt-3 d-flex gap-3 align-items-center">
@@ -218,7 +211,7 @@
             </div>
             <div class="pt-5">
                 <h2 class="fw-bold fs-3">All Contacts</h2>
-                <p class="small text-secondary">Manage and organize your 1 contacts</p>
+                <p id="countText" class="small text-secondary"></p>
             </div>
             <div class="row">
                 <div class="col-12 col-xl-9">
